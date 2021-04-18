@@ -3,6 +3,8 @@ package com.example.sweetchapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
@@ -25,6 +27,7 @@ import com.wwdablu.soumya.wzip.WZip;
 import com.wwdablu.soumya.wzip.WZipCallback;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
     ProgressBar progressBar1;
     @BindView(R.id.mView)
     FrameLayout mView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
     boolean isExpanded = false;
 
     @Override
@@ -51,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mView.setClipToOutline(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CustomAdapter adapter = new CustomAdapter( new String[]{"asd"});
+        recyclerView.setAdapter(adapter);
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
