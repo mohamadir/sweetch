@@ -3,10 +3,13 @@ package com.example.sweetchapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
     FrameLayout mView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
     boolean isExpanded = false;
 
     @Override
@@ -63,9 +68,16 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
             @Override
             public void onClick(View view) {
                 int height = 0;
-                if (isExpanded) height = 250;
-                else
+                if (isExpanded) height = 180;
+                else {
                     height = 500;
+                    nestedScrollView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                        nestedScrollView.smoothScrollBy(0, 500);
+                        }
+                    });
+                }
                 ValueAnimator anim = ValueAnimator.ofInt(mView.getMeasuredHeight(), toDp(height));
                 anim.addUpdateListener(valueAnimator -> {
                     int val = (Integer) valueAnimator.getAnimatedValue();
@@ -73,8 +85,13 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
                     layoutParams.height = val;
                     mView.setLayoutParams(layoutParams);
                 });
+
+
+
                 anim.setDuration(500);
                 anim.start();
+                AnimatorSet set = new AnimatorSet();
+                set.start();
                 isExpanded = !isExpanded;
             }
         });
