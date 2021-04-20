@@ -3,15 +3,22 @@ package com.example.sweetchapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -20,6 +27,7 @@ import com.wwdablu.soumya.wzip.WZip;
 import com.wwdablu.soumya.wzip.WZipCallback;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,18 +44,52 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
     ImageView imageView;
     @BindView(R.id.progress1)
     ProgressBar progressBar1;
-
+    @BindView(R.id.mView)
+    FrameLayout mView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    boolean isExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        mView.setClipToOutline(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        CustomAdapter adapter = new CustomAdapter( new String[]{"asd"});
+        recyclerView.setAdapter(adapter);
+        mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int height = 0;
+                if (isExpanded) height = 250;
+                else
+                    height = 500;
+                ValueAnimator anim = ValueAnimator.ofInt(mView.getMeasuredHeight(), toDp(height));
+                anim.addUpdateListener(valueAnimator -> {
+                    int val = (Integer) valueAnimator.getAnimatedValue();
+                    ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
+                    layoutParams.height = val;
+                    mView.setLayoutParams(layoutParams);
+                });
+                anim.setDuration(500);
+                anim.start();
+                isExpanded = !isExpanded;
+            }
+        });
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_CODE);
 
+    }
+
+    private int toDp(int val){
+        Resources r = getResources();
+        int px = Math.round(TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, val,r.getDisplayMetrics()));
+        return
+                px;
     }
 
     @Override
