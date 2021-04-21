@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wwdablu.soumya.wzip.WZip;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
     FrameLayout mView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.capture_mode)
+    TextView capture_mode;
     boolean isExpanded = false;
 
     @Override
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements WZipCallback {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         CustomAdapter adapter = new CustomAdapter( new String[]{"asd"});
         recyclerView.setAdapter(adapter);
+        capture_mode.setSelected(true);
         mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

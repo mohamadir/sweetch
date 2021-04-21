@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:gravity="center_vertical">
+    android:elevation="7dp"
+    android:padding="1dp"
+    android:layout_margin="50dp"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:id="@+id/mView"
+    android:background="@drawable/m_shape_2"
+    android:layout_height="150dp">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40dp"
-        android:textColor="@color/black"
-        android:text="asdasdasd"/>
+
 </FrameLayout>

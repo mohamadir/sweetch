@@ -7,6 +7,19 @@
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".MainActivity">
+    <TextView
+        android:id="@+id/capture_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is a test of marquee on the text view in android. This is a test of marquee on the text view in android. This is a test of marquee on the text view in android. This is a test of marquee on the text view in android."
+        android:ellipsize="marquee"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        />
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
