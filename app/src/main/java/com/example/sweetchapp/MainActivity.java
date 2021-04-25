@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
@@ -66,11 +67,14 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
     RelativeLayout relativeLayoutMain;
 
     RelativeLayout relativeLayoutA;
+    RelativeLayout relativeLayoutAHidden;
     RelativeLayout relativeLayoutB;
+    RelativeLayout relativeLayoutHidden;
     RelativeLayout relativeLayoutC;
     RelativeLayout relativeLayoutD;
 
     TableLayout tableLayoutA;
+    TableLayout tableLayoutAHiden;
     TableLayout tableLayoutB;
     TableLayout tableLayoutHidden;
     TableLayout tableLayoutC;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
     TableRow tableRowHidden;
 
     HorizontalScroll horizontalScrollViewB;
+    HorizontalScroll horizontalScrollViewHidden;
     HorizontalScroll horizontalScrollViewD;
 
     VerticalScroll scrollViewC;
@@ -196,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         mSectionedAdapter.setSections(sections.toArray(dummy));
         mRecyclerView.setAdapter(mAdapter);*/
     }
+    LinearLayout hiddenLl;
 
     private void setTable() {
         relativeLayoutMain= (RelativeLayout)findViewById(R.id.relativeLayoutMain);
@@ -207,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         horizontalScrollViewD.setScrollViewListener(this);
         horizontalScrollViewB.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         horizontalScrollViewD.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        horizontalScrollViewHidden.setScrollViewListener(this);
+        horizontalScrollViewHidden.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
         scrollViewC.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         scrollViewD.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         scrollViewC.setScrollViewListener(this);
@@ -215,16 +224,23 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         initializeRowForTableB();
         final boolean[] enable = {true};
 
+        relativeLayoutHidden.setVisibility(View.GONE);
+        relativeLayoutAHidden.setVisibility(View.GONE);
 
         ((NestedScrollView)findViewById(R.id.nestedScrollView)).setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int scrollX, int scrollY, int i2, int i3) {
                 ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
+                ViewGroup.LayoutParams layoutParams2 = relativeLayoutAHidden.getLayoutParams();
 
-                if (toDp(scrollY) > toDp(layoutParams.height)) {
-                     enable[0] = false;
+                if (toDp(scrollY) >= (toDp(layoutParams.height) + toDp(layoutParams2.height)   ) ) {
+                    relativeLayoutHidden.setVisibility(View.VISIBLE);
+                    relativeLayoutAHidden.setVisibility(View.VISIBLE);
                 } else {
-                    enable[0] = true;
+                    relativeLayoutHidden.setVisibility(View.GONE);
+                    relativeLayoutAHidden.setVisibility(View.GONE);
+
+
                 }
 
             }
@@ -237,8 +253,11 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
 //            }
 //        });
 
+         hiddenLl = (LinearLayout ) findViewById(R.id.hiddenLl);
+
         for(int i=0; i<9; i++){
             addColumnsToTableB("Head" + i, i);
+            addColumnsToHidden("Head" + i);
         }
         for(int i=0; i<20; i++){
             initializeRowForTableD(i);
@@ -247,6 +266,14 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
                 addColumnToTableAtD(i, "D "+ i + " " + j);
             }
         }
+    }
+
+    private void addColumnsToHidden(String s) {
+//        TextView label_date = new TextView(getApplicationContext());
+//        label_date.setText(s);
+//        label_date.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
+//        hiddenLl.addView(label_date);
+
     }
 
     private int toDp(int val){
@@ -347,9 +374,18 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         relativeLayoutA.setId(R.id.relativeLayoutA);
         relativeLayoutA.setPadding(0,0,0,0);
 
+        relativeLayoutAHidden= new RelativeLayout(getApplicationContext());
+        relativeLayoutAHidden.setId(R.id.relativeLayoutAHidden);
+        relativeLayoutAHidden.setPadding(0,0,0,0);
+
         relativeLayoutB= new RelativeLayout(getApplicationContext());
         relativeLayoutB.setId(R.id.relativeLayoutB);
         relativeLayoutB.setPadding(0,0,0,0);
+
+        relativeLayoutHidden= new RelativeLayout(getApplicationContext());
+        relativeLayoutHidden.setId(R.id.relativeLayoutHidden);
+        relativeLayoutHidden.setPadding(0,0,0,0);
+
 
         relativeLayoutC= new RelativeLayout(getApplicationContext());
         relativeLayoutC.setId(R.id.relativeLayoutC);
@@ -360,13 +396,31 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         relativeLayoutD.setPadding(0,0,0,0);
 
         relativeLayoutA.setLayoutParams(new RelativeLayout.LayoutParams(SCREEN_WIDTH/5,SCREEN_HEIGHT/20));
+        relativeLayoutAHidden.setLayoutParams(new RelativeLayout.LayoutParams(SCREEN_WIDTH/5,SCREEN_HEIGHT/20));
         this.relativeLayoutMain.addView(relativeLayoutA);
+
+        RelativeLayout.LayoutParams layoutParamsRelativeLayoutAHidden= new RelativeLayout.LayoutParams(SCREEN_WIDTH/5,SCREEN_HEIGHT/20);
+        layoutParamsRelativeLayoutAHidden.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+        relativeLayoutAHidden.setLayoutParams(layoutParamsRelativeLayoutAHidden);
+        ((RelativeLayout)findViewById(R.id.mainFl)).addView(relativeLayoutAHidden);
+
 
 
         RelativeLayout.LayoutParams layoutParamsRelativeLayoutB= new RelativeLayout.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT/20);
         layoutParamsRelativeLayoutB.addRule(RelativeLayout.LEFT_OF, R.id.relativeLayoutA);
         relativeLayoutB.setLayoutParams(layoutParamsRelativeLayoutB);
         this.relativeLayoutMain.addView(relativeLayoutB);
+
+
+        RelativeLayout.LayoutParams layoutParamsRelativeLayoutHidden= new RelativeLayout.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT/20);
+        layoutParamsRelativeLayoutHidden.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        layoutParamsRelativeLayoutHidden.addRule(RelativeLayout.LEFT_OF, R.id.relativeLayoutAHidden);
+        relativeLayoutHidden.setLayoutParams(layoutParamsRelativeLayoutHidden);
+        ((RelativeLayout)findViewById(R.id.mainFl)).addView(relativeLayoutHidden);
+
+
+
+
 
         RelativeLayout.LayoutParams layoutParamsRelativeLayoutC= new RelativeLayout.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT - (SCREEN_HEIGHT/20));
         layoutParamsRelativeLayoutC.addRule(RelativeLayout.BELOW, R.id.relativeLayoutA);
@@ -385,6 +439,10 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         horizontalScrollViewB= new HorizontalScroll(getApplicationContext());
         horizontalScrollViewB.setPadding(0,0,0,0);
 
+        horizontalScrollViewHidden= new HorizontalScroll(getApplicationContext());
+        horizontalScrollViewHidden.setPadding(0,0,0,0);
+
+
         horizontalScrollViewD= new HorizontalScroll(getApplicationContext());
         horizontalScrollViewD.setPadding(0,0,0,0);
 
@@ -395,20 +453,25 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         scrollViewD.setPadding(0,0,0,0);
 
         horizontalScrollViewB.setLayoutParams(new ViewGroup.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT/20));
+        horizontalScrollViewHidden.setLayoutParams(new ViewGroup.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT/20));
         scrollViewC.setLayoutParams(new ViewGroup.LayoutParams(SCREEN_WIDTH/5 ,SCREEN_HEIGHT - (SCREEN_HEIGHT/20)));
         scrollViewD.setLayoutParams(new ViewGroup.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT - (SCREEN_HEIGHT/20) ));
         horizontalScrollViewD.setLayoutParams(new ViewGroup.LayoutParams(SCREEN_WIDTH- (SCREEN_WIDTH/5), SCREEN_HEIGHT - (SCREEN_HEIGHT/20) ));
 
         this.relativeLayoutB.addView(horizontalScrollViewB);
+        this.relativeLayoutHidden.addView(horizontalScrollViewHidden);
         this.relativeLayoutC.addView(scrollViewC);
         this.scrollViewD.addView(horizontalScrollViewD);
         this.relativeLayoutD.addView(scrollViewD);
+
 
     }
 
     private  void initializeTableLayout(){
         tableLayoutA= new TableLayout(getApplicationContext());
         tableLayoutA.setPadding(0,0,0,0);
+        tableLayoutAHiden= new TableLayout(getApplicationContext());
+        tableLayoutAHiden.setPadding(0,0,0,0);
         tableLayoutB= new TableLayout(getApplicationContext());
         tableLayoutHidden= new TableLayout(getApplicationContext());
         tableLayoutHidden.setPadding(0,0,0,0);
@@ -425,6 +488,12 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         tableLayoutA.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         this.relativeLayoutA.addView(tableLayoutA);
 
+        TableLayout.LayoutParams layoutParamsTableLayoutAHidden= new TableLayout.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT/20);
+        tableLayoutAHiden.setLayoutParams(layoutParamsTableLayoutAHidden);
+        tableLayoutAHiden.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        this.relativeLayoutAHidden.addView(tableLayoutAHiden);
+
+
         TableLayout.LayoutParams layoutParamsTableLayoutB= new TableLayout.LayoutParams(SCREEN_WIDTH -(SCREEN_WIDTH/5), SCREEN_HEIGHT/20);
         tableLayoutB.setLayoutParams(layoutParamsTableLayoutB);
         tableLayoutB.setBackgroundColor(getResources().getColor(R.color.colorSecondary));
@@ -434,13 +503,7 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         TableLayout.LayoutParams layoutParamsTableLayoutHidden= new TableLayout.LayoutParams(SCREEN_WIDTH -(SCREEN_WIDTH/5), SCREEN_HEIGHT/20);
         tableLayoutHidden.setLayoutParams(layoutParamsTableLayoutHidden);
         tableLayoutHidden.setBackgroundColor(getResources().getColor(R.color.colorSecondary));
-
-      /*  RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-
-        ((RelativeLayout) findViewById(R.id.mainFl)).addView(tableLayoutHidden,params);
-*/
+        this.horizontalScrollViewHidden.addView(tableLayoutHidden);
 
 
         TableLayout.LayoutParams layoutParamsTableLayoutC= new TableLayout.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT - (SCREEN_HEIGHT/20));
@@ -454,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
 
 
         tableLayoutA.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        tableLayoutAHiden.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tableLayoutB.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tableLayoutHidden.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         tableLayoutC.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
@@ -468,8 +532,13 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         if(scrollView == horizontalScrollViewB){
             horizontalScrollViewD.scrollTo(x,y);
         }
+        if(scrollView == horizontalScrollViewHidden){
+            horizontalScrollViewD.scrollTo(x,y);
+        }
+
         else if(scrollView == horizontalScrollViewD){
             horizontalScrollViewB.scrollTo(x, y);
+            horizontalScrollViewHidden.scrollTo(x, y);
         }
 
     }
@@ -494,6 +563,17 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         label_date.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
         tableRow.addView(label_date);
         this.tableLayoutA.addView(tableRow);
+
+
+        tableRow= new TableRow(getApplicationContext());
+        TableRow.LayoutParams layoutParamsTableRowAHidden= new TableRow.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT/20);
+        tableRow.setLayoutParams(layoutParamsTableRowAHidden);
+        TextView label_date_hidden = new TextView(getApplicationContext());
+        label_date_hidden.setText("Item/ID");
+        tableRow.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
+        label_date_hidden.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
+        tableRow.addView(label_date_hidden);
+        this.tableLayoutAHiden.addView(tableRow);
     }
 
     private void initializeRowForTableB(){
@@ -518,16 +598,16 @@ public class MainActivity extends AppCompatActivity implements WZipCallback, Hor
         tableColumnCountB++;
 
 
-        tableRow2= new TableRow(getApplicationContext());
+        tableRow= new TableRow(getApplicationContext());
         TableRow.LayoutParams layoutParamsTableRowHidden= new TableRow.LayoutParams(SCREEN_WIDTH/5, SCREEN_HEIGHT/20);
-        tableRow2.setPadding(3,3,3,4);
-        tableRow2.setLayoutParams(layoutParamsTableRowHidden);
+        tableRow.setPadding(3,3,3,4);
+        tableRow.setLayoutParams(layoutParamsTableRowHidden);
         TextView label_dateHidden = new TextView(getApplicationContext());
         label_dateHidden.setText(text);
         label_dateHidden.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
-        this.tableRow2.addView(label_dateHidden);
-        this.tableRow2.setTag(id);
-        this.tableLayoutHidden.addView(tableRow2);
+        this.tableRow.addView(label_dateHidden);
+        this.tableRow.setTag(id);
+        this.tableRowHidden.addView(tableRow);
     }
 
     private synchronized void addRowToTableC(String text){

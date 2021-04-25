@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="relativeLayoutA" type="id" />
+    <item name="relativeLayoutAHidden" type="id" />
+    <item name="relativeLayoutHidden" type="id" />
     <item name="relativeLayoutB" type="id" />
     <item name="relativeLayoutC" type="id" />
     <item name="relativeLayoutD" type="id" />
